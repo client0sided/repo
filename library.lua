@@ -16,7 +16,7 @@ local currentTab = nil
 
 -- Animation settings
 local WINDOW_TWEEN_INFO = TweenInfo.new(
-	0.7, -- Duration
+	0.2, -- Duration
 	Enum.EasingStyle.Sine,
 	Enum.EasingDirection.Out,
 	0, -- RepeatCount
@@ -235,7 +235,7 @@ function Library:CreateTab(name)
 	-- Animate tab button in with stagger
 	local delay = 0.35 + (tabIndex * 0.08)
 	animateElement(tabButton, {BackgroundTransparency = 0}, delay)
-	animateElement(tabStroke, {Transparency = 0}, delay + 0.05)
+	animateElement(tabStroke, {Transparency = 1}, delay + 0.05) -- Start at transparency 1 (closed)
 	animateElement(tabLabel, {TextTransparency = 0}, delay + 0.1)
 	
 	-- Create tab content container
@@ -270,15 +270,15 @@ function Library:CreateTab(name)
 	
 	-- Tab selection logic
 	local function selectTab()
-		-- Hide all tabs
+		-- Hide all tabs and set stroke to transparency 1 (closed)
 		for _, tab in pairs(tabs) do
 			tab.content.Visible = false
-			animateElement(tab.stroke, {Color = Color3.fromRGB(31, 31, 31)})
+			animateElement(tab.stroke, {Transparency = 1}) -- Closed tab
 		end
 		
-		-- Show this tab
+		-- Show this tab and set stroke to transparency 0.8 (open)
 		tabContent.Visible = true
-		animateElement(tabStroke, {Color = Color3.fromRGB(60, 60, 60)})
+		animateElement(tabStroke, {Transparency = 0.8}) -- Open tab
 		currentTab = Tab
 		
 		-- Update content area title
