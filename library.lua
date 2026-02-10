@@ -16,15 +16,15 @@ local currentTab = nil
 
 -- Animation settings
 local WINDOW_TWEEN_INFO = TweenInfo.new(
-	0.6, -- Duration
-	Enum.EasingStyle.Cubic,
+	0.7, -- Duration
+	Enum.EasingStyle.Sine,
 	Enum.EasingDirection.Out,
 	0, -- RepeatCount
 	false, -- Reverses
 	0 -- DelayTime
 )
 
--- Custom bezier approximation using Cubic Out
+-- Custom bezier approximation using Sine Out
 local function animateElement(element, targetProperties, delay)
 	delay = delay or 0
 	
