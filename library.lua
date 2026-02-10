@@ -2,8 +2,8 @@
 local Library = {}
 
 -- Services
-local CoreGui = game:GetService("CoreGui")
 local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
 
 -- Main library state
 local mainGui = nil
@@ -16,7 +16,7 @@ local currentTab = nil
 
 -- Animation settings
 local WINDOW_TWEEN_INFO = TweenInfo.new(
-	0.2, -- Duration
+	0.7, -- Duration
 	Enum.EasingStyle.Sine,
 	Enum.EasingDirection.Out,
 	0, -- RepeatCount
@@ -52,17 +52,30 @@ function Library:CreateWindow(title)
 	mainGui.Name = "UILibrary"
 	mainGui.ResetOnSpawn = false
 	
-	-- Try to parent to CoreGui, fallback to PlayerGui if that fails
-	local success, err = pcall(function()
-		mainGui.Parent = CoreGui
-	end)
-	
-	if not success then
-		local Players = game:GetService("Players")
-		local LocalPlayer = Players.LocalPlayer
-		if LocalPlayer then
-			mainGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+	-- Determine parent based on environment
+	if RunService:IsStudio() and RunService:IsEdit() then
+		-- Running in Studio Edit mode
+		mainGui.Parent = game:GetService("CoreGui")
+	elseif RunService:IsRunning() then
+		-- Running in game or Studio Play mode
+		local success = pcall(function()
+			mainGui.Parent = game:GetService("CoreGui")
+		end)
+		
+		if not success then
+			-- Fallback to PlayerGui if CoreGui fails
+			local Players = game:GetService("Players")
+			local LocalPlayer = Players.LocalPlayer
+			if LocalPlayer then
+				mainGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+			else
+				warn("Could not find valid parent for UI")
+				return self
+			end
 		end
+	else
+		-- Fallback for other cases
+		mainGui.Parent = game:GetService("CoreGui")
 	end
 	
 	-- Create MainFrame (start invisible)
